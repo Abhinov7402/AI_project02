@@ -1,27 +1,79 @@
-Please Enter your team's full names and your answers to the questions marked by QS questions here!
+Team Members: Nischal Dinesh, Sai Abhinov Chowdary Katragadda
 
-Q1.1:
+Q1.1:explain the implementation of ReflexAgent  in multiAgents.py and how you improved it.
 
-Q1.2:
+Answer:
+The ReflexAgent in multiAgents.py evaluates actions based on food and ghost distances:
+- FoodDistances: Calculates distance from Pacman’s new position to all food pellets.
+- GhostDistances: Computes distance to each ghost to avoid them.
+- Evaluation: Combines:
+    - Closer to food means Higher score.
+    - Closer to ghots means Lower score.
+    - Considers ghosts for chasing.
 
+Improvement Made: Used inverse distances (1/distance) to prioritize nearby food and avoid ghosts.
 
+Q1.2:What is your value function and why do you think this estimation makes sense?
 
-
-Q2.1:
-
-
-
-
-
-Q3.1:
-
-Q3.2
-
-
-
-Q4.1:
+Answer:
 
 
-Q5.1:
 
+Q2.1:Explain your algorithm. Why do you think it is working?
+
+Answer:
+The Minimax algorithm is used to find the best move for Pacman, where ghosts will play optimally to minimize Pacman’s score.
+1.Pacman's Turn (Maximizing):
+    - Pacman tries to maximize the evaluation score.
+    - Chooses the action that leads to the best possible outcome.
+2. Ghost's Turn (Minimizing):
+    - Each ghost tries to minimize Pacman’s score.
+    - The ghosts act in sequence.
+3. Recursive Exploration:
+    - The algorithm explores all possible future states up to a certain depth.
+    - It evaluates each state using the evaluation function if it reaches the depth limit or a terminal state of win oe lose.
+4. Returns the Best Move:
+    - Pacman picks the action with the maximum value.
+    - Ghosts pick actions that minimize Pacman's value.
+
+- It simulates both Pacman and ghost behaviors, assuming both play their best moves.
+- It evaluates each action based on future consequences, not just the immediate result.
+
+
+
+Q3.1:The AlphaBetaAgent minimax values should be identical to the MinimaxAgent minimax values.  Explain why.
+
+Answer:
+Because alpha beta pruning does not change the result of the minimax algorithm, it only improves the efficiency.
+Both algorithms explore the same game tree and apply the same evaluation function to select the best action. 
+Alpha beta pruning prunes branches that cannot possibly affect the final decision, reducing the number of states evaluated. 
+However, the final chosen action and the values assigned to states will be the same as with the regular minimax algorithm. 
+This is because alpha beta pruning does not ignore any optimal moves, it just avoids unnecessary exploration of worse paths.
+
+
+Q3.2: explain your strategy for breaking a tie.
+
+Answer:
+Our strategy for breaking a tie is to choose randomly among the best actions when multiple actions have the same minimax value.
+chosenIndex = random.choice(bestIndices)
+- This prevents Pacman from getting stuck in loops.
+
+Q4.1:Explain your Expectimax algorithm
+
+Answer:
+Expectimax algorithm is similar to Minimax, but it handles ghost moves differently. 
+Instead of assuming that the ghosts play optimally to minimize Pacman's score, Expectimax assumes that the ghosts move randomly. 
+- Pacman's Turn (Maximizing): Pacman still chooses the action that maximizes the evaluation score.
+- Ghost's Turn (Chance Nodes): Instead of picking the minimum score, we calculate the average score across all possible ghost actions because their behavior is random.
+
+
+Q5.1:explain your new evaluation function, why do you think this new evaluation function is better compared to the previous one?
+
+Answer:
+Our new evaluation function evaluates the state based on four factors:
+    -Game Score: Prioritizes increasing the current score.
+    -Distance to Nearest Food: Encourages Pacman to move toward the closest food pellet using 1/(distance + 1) to give higher value to closer food.
+    -Distance to Nearest Ghost: Penalizes Pacman for being close to a ghost using -1/(distance + 1) to avoid danger.
+
+This is better because it balances food collection, ghost avoidance, and it rewards being close to food, penalizes being near active ghosts.
 
