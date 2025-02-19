@@ -77,26 +77,21 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         "*** YOUR CODE HERE ***"
-        # use distance to food and distance to food instead of food position, evaluating state action pairs
-        # use distance to ghost to avoid ghost
-        # use scared time to eat ghost
-        # use score to evaluate state
-        # use distance to food to evaluate state
-        # use distance to ghost to evaluate state
-        # use scared time to evaluate state
-        newFoodList = newFood.asList()
-        foodDistances = [manhattanDistance(newPos, food) for food in newFoodList]
-        GhostDistances = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]
+        newFoodList = newFood.asList()                          # to get the list of food positions in the grid as a list of tuples (x, y) 
+        foodDistances = [manhattanDistance(newPos, food) for food in newFoodList] # to get the manhattan distance between pacman and the food positions in the grid 
+        GhostDistances = [manhattanDistance(newPos, ghost.getPosition()) for ghost in newGhostStates]   # to get the manhattan distance between pacman and the ghost positions in the grid
         
-        print(str(newGhostStates))
-
-
         
+        print("scared_times_value: "+str(newScaredTimes))   # to print the scared times of the ghost in the grid
+        print("Pacman_Position"+str(newPos))                # to print the position of pacman in the grid
+        print("food_distances:"+str(foodDistances))         # to print the manhattan distance between pacman and the food positions in the grid
+        print("ghost_states"+str(newGhostStates))           # to print the ghost states in the grid
+        print("ghost_distances"+str(GhostDistances))        # to print the manhattan distance between pacman and the ghost positions in the grid 
 
-            
 
 
-        return (successorGameState.getScore() + 1/(min(foodDistances, default= 0) + 1) - 1/(min(GhostDistances) + 1) + sum(newScaredTimes))
+        return (successorGameState.getScore() + 1/(min(foodDistances, default= 0) + 1) - 10/(min(GhostDistances)+1)  )
+        # return the evaluation function value which is the score of the game state + 1/(minimum distance between pacman and food + 1) - 10/(minimum distance between pacman and ghost + 1)     
 
 def scoreEvaluationFunction(currentGameState: GameState):
     """
@@ -158,80 +153,79 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         
-        # get legal actions for pacman
+        # to get legal actions for pacman
         legalActions = gameState.getLegalActions(0)
-        # get the number of ghosts
+        # to get the number of ghosts
         numGhosts = gameState.getNumAgents() - 1
-        # get the number of legal actions for pacman
-        numLegalActions = len(legalActions)
-        # initialize the best action to None
+        # to initialize the best action to None
         bestAction = None
-        # initialize the best score to negative infinity
+        # to initialize the best score to negative infinity
         bestScore = float('-inf')
-        # iterate over the legal actions for pacman
+        # to iterate over the legal actions for pacman
         for action in legalActions:
-            # get the successor state for the action
+            # to get the successor state for the action
             successorState = gameState.generateSuccessor(0, action)
-            # get the score for the successor state
+            # to get the score for the successor state
             score = self.minimax(successorState, 1, numGhosts, self.depth)
             # if the score is greater than the best score
             if score > bestScore:
-                # update the best score
+                # the best score is updated
                 bestScore = score
-                # update the best action
+                # the best action is updated
                 bestAction = action
-        # return the best action
+        # to return the best action
         return bestAction
-    
         util.raiseNotDefined()
+
+    # to implement the minimax algorithm for the pacman agent and the ghosts 
     def minimax(self, gameState, agentIndex, numGhosts, depth):
         # if the game state is a win or a loss or the depth is 0
         if gameState.isWin() or gameState.isLose() or depth == 0:
-            # return the score of the game state
+            # the score of the game state is returned
             return self.evaluationFunction(gameState)
-        # if the agent index is 0
+        # if the agent index is 0(pacman)
         if agentIndex == 0:
-            # get the legal actions for pacman
+            # to get the legal actions for pacman
             legalActions = gameState.getLegalActions(agentIndex)
-            # initialize the best score to negative infinity
+            # to initialize the best score to negative infinity
             bestScore = float('-inf')
-            # iterate over the legal actions for pacman
+            # to iterate over the legal actions for pacman
             for action in legalActions:
-                # get the successor state for the action
+                # to get the successor state for the action
                 successorState = gameState.generateSuccessor(agentIndex, action)
-                # get the score for the successor state
+                # to get the score for the successor state
                 score = self.minimax(successorState, 1, numGhosts, depth)
-                # update the best score
+                # to update the best score
                 bestScore = max(bestScore, score)
-            # return the best score
+            # to return the best score
             return bestScore
         # if the agent index is not 0
         else:
-            # get the legal actions for the ghost
+            # to get the legal actions for the ghost
             legalActions = gameState.getLegalActions(agentIndex)
-            # initialize the best score to positive infinity
+            # to initialize the best score to positive infinity
             bestScore = float('inf')
             # if the agent index is the last ghost
             if agentIndex == numGhosts:
-                # iterate over the legal actions for the ghost
+                # to iterate over the legal actions for the ghost
                 for action in legalActions:
-                    # get the successor state for the action
+                    # to get the successor state for the action
                     successorState = gameState.generateSuccessor(agentIndex, action)
-                    # get the score for the successor state
+                    # to get the score for the successor state
                     score = self.minimax(successorState, 0, numGhosts, depth - 1)
-                    # update the best score
+                    # to update the best score
                     bestScore = min(bestScore, score)
             # if the agent index is not the last ghost
             else:
-                # iterate over the legal actions for the ghost
+                # to iterate over the legal actions for the ghost
                 for action in legalActions:
-                    # get the successor state for the action
+                    # to get the successor state for the action
                     successorState = gameState.generateSuccessor(agentIndex, action)
-                    # get the score for the successor state
+                    # to get the score for the successor state
                     score = self.minimax(successorState, agentIndex + 1, numGhosts, depth)
-                    # update the best score
+                    # to update the best score
                     bestScore = min(bestScore, score)
-            # return the best score
+            # to return the best score
             return bestScore
         
         util.raiseNotDefined()
@@ -248,104 +242,102 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         """The minimax should expand with min for each number of ghost and max for pacman state and prune according to alpha beta"""
-        # get legal actions for pacman
+        # to get legal actions for pacman
         legalActions = gameState.getLegalActions(0)
-        # get the number of ghosts
+        # to get the number of ghosts
         numGhosts = gameState.getNumAgents() - 1
-        # get the number of legal actions for pacman
-        numLegalActions = len(legalActions)
-        # initialize the best action to None
+        # to initialize the best action to None
         bestAction = None
-        # initialize the best score to negative infinity
+        # to initialize the best score to negative infinity
         bestScore = float('-inf')
-        # initialize alpha to negative infinity
+        # to initialize alpha to negative infinity
         alpha = float('-inf')
-        # initialize beta to positive infinity
+        # to initialize beta to positive infinity
         beta = float('inf')
-        # iterate over the legal actions for pacman
+        # to iterate over the legal actions for pacman
         for action in legalActions:
-            # get the successor state for the action
+            # to get the successor state for the action
             successorState = gameState.generateSuccessor(0, action)
-            # get the score for the successor state
+            # to get the score for the successor state
             score = self.minimax(successorState, 1, numGhosts, self.depth, alpha, beta)
             # if the score is greater than the best score
             if score > bestScore:
-                # update the best score
+                # to update the best score
                 bestScore = score
-                # update the best action
+                # to update the best action
                 bestAction = action
-            # update alpha
+            # to update alpha
             alpha = max(alpha, bestScore)
-        # return the best action
+        # to return the best action
         return bestAction
-
         util.raiseNotDefined()
+
     def minimax(self, gameState, agentIndex, numGhosts, depth, alpha, beta):
         # if the game state is a win or a loss or the depth is 0
         if gameState.isWin() or gameState.isLose() or depth == 0:
-            # return the score of the game state
+            # the score of the game state is returned
             return self.evaluationFunction(gameState)
         
         # To prune tree expansion based on alpha and beta
         if agentIndex == 0:
-            # get the legal actions for pacman
+            # to get the legal actions for pacman
             legalActions = gameState.getLegalActions(agentIndex)
-            # initialize the best score to negative infinity
+            # to initialize the best score to negative infinity
             bestScore = float('-inf')
-            # iterate over the legal actions for pacman
+            # to iterate over the legal actions for pacman
             for action in legalActions:
-                # get the successor state for the action
+                # to get the successor state for the action
                 successorState = gameState.generateSuccessor(agentIndex, action)
-                # get the score for the successor state
+                # to get the score for the successor state
                 score = self.minimax(successorState, 1, numGhosts, depth, alpha, beta)
-                # update the best score
+                # to update the best score 
                 bestScore = max(bestScore, score)
                 # if the best score is greater than beta
                 if bestScore > beta:
                     # return the best score
                     return bestScore
-                # update alpha
+                # to update alpha 
                 alpha = max(alpha, bestScore)
-            # return the best score
+            # to return the best score
             return bestScore
         else:
-            # get the legal actions for the ghost
+            # to get the legal actions for the ghost
             legalActions = gameState.getLegalActions(agentIndex)
-            # initialize the best score to positive infinity
+            # to initialize the best score to positive infinity
             bestScore = float('inf')
-            # if the agent index is the last ghost
+            # if the agent index is the last ghost 
             if agentIndex == numGhosts:
-                # iterate over the legal actions for the ghost
+                # to iterate over the legal actions for the ghost
                 for action in legalActions:
-                    # get the successor state for the action
+                    # to get the successor state for the action
                     successorState = gameState.generateSuccessor(agentIndex, action)
-                    # get the score for the successor state
+                    # to get the score for the successor state
                     score = self.minimax(successorState, 0, numGhosts, depth - 1, alpha, beta)
-                    # update the best score
+                    # to update the best score
                     bestScore = min(bestScore, score)
                     # if the best score is less than alpha
                     if bestScore < alpha:
-                        # return the best score
+                        # to return the best score
                         return bestScore
-                    # update beta
+                    # to update beta
                     beta = min(beta, bestScore)
             # if the agent index is not the last ghost
             else:
-                # iterate over the legal actions for the ghost
+                # to iterate over the legal actions for the ghost
                 for action in legalActions:
-                    # get the successor state for the action
+                    # to get the successor state for the action
                     successorState = gameState.generateSuccessor(agentIndex, action)
-                    # get the score for the successor state
+                    # to get the score for the successor state
                     score = self.minimax(successorState, agentIndex + 1, numGhosts, depth, alpha, beta)
-                    # update the best score
+                    # to update the best score
                     bestScore = min(bestScore, score)
                     # if the best score is less than alpha
                     if bestScore < alpha:
-                        # return the best score
+                        # to return the best score
                         return bestScore
-                    # update beta
+                    # to update beta
                     beta = min(beta, bestScore)
-            # return the best score
+            # to return the best score
             return bestScore
         util.raiseNotDefined()
         
@@ -363,79 +355,77 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legal moves.
         """
         "*** YOUR CODE HERE ***"
-        # get legal actions for pacman
+        # to get legal actions for pacman
         legalActions = gameState.getLegalActions(0)
-        # get the number of ghosts
+        # to get the number of ghosts
         numGhosts = gameState.getNumAgents() - 1
-        # get the number of legal actions for pacman
-        numLegalActions = len(legalActions)
-        # initialize the best action to None
+        # to initialize the best action to None
         bestAction = None
-        # initialize the best score to negative infinity
+        # to initialize the best score to negative infinity
         bestScore = float('-inf')
-        # iterate over the legal actions for pacman
+        # to iterate over the legal actions for pacman
         for action in legalActions:
-            # get the successor state for the action
+            # to get the successor state for the action
             successorState = gameState.generateSuccessor(0, action)
-            # get the score for the successor state
+            # to get the score for the successor state
             score = self.expectimax(successorState, 1, numGhosts, self.depth)
             # if the score is greater than the best score
             if score > bestScore:
-                # update the best score
+                # to update the best score
                 bestScore = score
-                # update the best action
+                # to update the best action
                 bestAction = action
-        # return the best action
+        # to return the best action
         return bestAction
         util.raiseNotDefined()
     def expectimax(self, gameState, agentIndex, numGhosts, depth):
         # if the game state is a win or a loss or the depth is 0
         if gameState.isWin() or gameState.isLose() or depth == 0:
-            # return the score of the game state
+            # to return the score of the game state
             return self.evaluationFunction(gameState)
         # if the agent index is 0
         if agentIndex == 0:
-            # get the legal actions for pacman
+            # to get the legal actions for pacman
             legalActions = gameState.getLegalActions(agentIndex)
-            # initialize the best score to negative infinity
+            # to initialize the best score to negative infinity
             bestScore = float('-inf')
-            # iterate over the legal actions for pacman
+            # to iterate over the legal actions for pacman
             for action in legalActions:
-                # get the successor state for the action
+                # to get the successor state for the action
                 successorState = gameState.generateSuccessor(agentIndex, action)
-                # get the score for the successor state
+                # to get the score for the successor state
                 score = self.expectimax(successorState, 1, numGhosts, depth)
-                # update the best score
+                # to update the best score
                 bestScore = max(bestScore, score)
-            # return the best score
+            # to return the best score
             return bestScore
         # if the agent index is not 0
         else:
-            # get the legal actions for the ghost
+            # to get the legal actions for the ghost
             legalActions = gameState.getLegalActions(agentIndex)
-            # initialize the best score to 0
+            # to initialize the best score to 0
             bestScore = 0
             # if the agent index is the last ghost
             if agentIndex == numGhosts:
-                # iterate over the legal actions for the ghost
+                # to iterate over the legal actions for the ghost
                 for action in legalActions:
-                    # get the successor state for the action
+                    # to  get the successor state for the action
                     successorState = gameState.generateSuccessor(agentIndex, action)
-                    # get the score for the successor state
+                    # to get the score for the successor state
                     score = self.expectimax(successorState, 0, numGhosts, depth - 1)
-                    # update the best score
+                    # to update the best score
                     bestScore += score
             # if the agent index is not the last ghost
             else:
-                # iterate over the legal actions for the ghost
+                # to iterate over the legal actions for the ghost
                 for action in legalActions:
-                    # get the successor state for the action
+                    # to get the successor state for the action
                     successorState = gameState.generateSuccessor(agentIndex, action)
-                    # get the score for the successor state
+                    # to get the score for the successor state
                     score = self.expectimax(successorState, agentIndex + 1, numGhosts, depth)
-                    # update the best score
+                    # to update the best score
                     bestScore += score
-            # return the best score
+            # to return the best score
             return bestScore / len(legalActions)
         util.raiseNotDefined()
 
@@ -447,31 +437,39 @@ def betterEvaluationFunction(currentGameState: GameState):
     evaluation function (question 5).
 
     DESCRIPTION: <write something here so we know what you did>
+    Here we calculated the distance of pacman from food pellets, from ghosts 
+    and computed the nearest food pellet and ghost distance.
+    We also calculated the scared time of the ghost and added the score of the game state.
+    We then returned the evaluation function which is 
+    the score of the game state + 1/(minimum distance between pacman and food + 1) - 1/(minimum distance between pacman and ghost + 1) + scared time
+
+    We chose this evaluation function because it considers:
+    - the score of the game state, 
+    - the distance of pacman from the food pellets, 
+    - the distance of pacman from the ghosts, 
+    - and the scared time of the ghost. (This is the most important factor as it helps pacman to eat the ghost and get more points)
+
     """
     "*** YOUR CODE HERE ***"
-    # get the position of pacman
+    # to get the position of pacman
     pacmanPosition = currentGameState.getPacmanPosition()
-    # get the food grid
+    # to get the food grid
     foodGrid = currentGameState.getFood()
-    # get the food list
+    # to get the food list
     foodList = foodGrid.asList()
-    # get the ghost states
+    # to get the ghost states
     ghostStates = currentGameState.getGhostStates()
-    # get the scared times
+    # to get the scared times
     scaredTimes = [ghostState.scaredTimer for ghostState in ghostStates]
-    # get the number of food
-    numFood = len(foodList)
-    # get the number of ghosts
-    numGhosts = len(ghostStates)
-    # get the score
+    # to get the score
     score = currentGameState.getScore()
-    # get the distance to the nearest food
+    # to get the distance to the nearest food
     distanceToNearestFood = min([manhattanDistance(pacmanPosition, food) for food in foodList], default=0)
-    # get the distance to the nearest ghost
+    # to get the distance to the nearest ghost
     distanceToNearestGhost = min([manhattanDistance(pacmanPosition, ghost.getPosition()) for ghost in ghostStates], default=0)
-    # get the scared time
+    # to get the scared time
     scaredTime = sum(scaredTimes)
-    # return the evaluation function
+    # to return the evaluation function
     return score + 1/(distanceToNearestFood + 1) - 1/(distanceToNearestGhost + 1) + scaredTime
     
     util.raiseNotDefined()
