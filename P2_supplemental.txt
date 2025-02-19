@@ -8,7 +8,6 @@ The ReflexAgent in multiAgents.py evaluates actions based on food and ghost dist
 - GhostDistances: Computes distance to each ghost to avoid them.
 - Evaluation: Combines:
     - Closer to food means Higher score.
-<<<<<<< HEAD
     - Closer to ghosts means Lower score.
 
 Improvement Made: Used inverse distances (1/distance) to prioritize nearby food and avoid ghosts.
@@ -23,21 +22,13 @@ Answer: The value function is the sum of the score of current state of pacman, t
         This value function makes sense, since it encourages the pacman to explore the nearest food pellets, while penalizes 
         the presence of ghost around pacman.
 
-        To avoid the death of pacman during the game, the penalty for closer ghosts is penalized on score, but over penalizing
-        pacman wouldnot do any good in this scenario.
+        To avoid the death of pacman during the game, the penalty for closer ghosts is penalized on score, but over penalizing the
+        pacman for closer ghosts wouldnot do any good in this scenario.
 
-        When the penalty for ghost distance -10, which was chosen randomly, Pacman won all test cases, 
+        When the penalty for ghost distance was -10, which was chosen randomly, Pacman won all test cases, 
         but when penalty of -100 was used, the pacman was not successfull in finishing the games at all. 
-=======
-    - Closer to ghots means Lower score.
-    - Considers ghosts for chasing.
+    
 
-Improvement Made: Used inverse distances (1/distance) to prioritize nearby food and avoid ghosts.
-
-Q1.2:What is your value function and why do you think this estimation makes sense?
-
-Answer:
->>>>>>> f266a5ed7fd0ce20e4e7635296a4b1c88df3d004
 
 
 
@@ -53,11 +44,7 @@ The Minimax algorithm is used to find the best move for Pacman, where ghosts wil
     - The ghosts act in sequence.
 3. Recursive Exploration:
     - The algorithm explores all possible future states up to a certain depth.
-<<<<<<< HEAD
     - It evaluates each state using the evaluation function if it reaches the depth limit or a terminal state of win or lose.
-=======
-    - It evaluates each state using the evaluation function if it reaches the depth limit or a terminal state of win oe lose.
->>>>>>> f266a5ed7fd0ce20e4e7635296a4b1c88df3d004
 4. Returns the Best Move:
     - Pacman picks the action with the maximum value.
     - Ghosts pick actions that minimize Pacman's value.
@@ -100,12 +87,8 @@ Our new evaluation function evaluates the state based on four factors:
     -Game Score: Prioritizes increasing the current score.
     -Distance to Nearest Food: Encourages Pacman to move toward the closest food pellet using 1/(distance + 1) to give higher value to closer food.
     -Distance to Nearest Ghost: Penalizes Pacman for being close to a ghost using -1/(distance + 1) to avoid danger.
-<<<<<<< HEAD
     -Scared Time : Encourages Pacman to feed on Ghost when it comes closer while the special pellet is beside pacman. 
-=======
 
-This is better because it balances food collection, ghost avoidance, and it rewards being close to food, penalizes being near active ghosts.
->>>>>>> f266a5ed7fd0ce20e4e7635296a4b1c88df3d004
 
 This is better because it balances food collection, ghost avoidance, and it rewards being close to food, penalizes being near active ghosts like the previous one
  but it has additional feature that enables Pacman to score bonus points by feeding ghost/ghosts while they are scared of Pacman.
